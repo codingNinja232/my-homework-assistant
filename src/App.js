@@ -4,7 +4,7 @@ import axios from "axios";
 import './App.css';
 
 const client = axios.create({
-  baseURL: "http://myapi" 
+  baseURL: "https://myApi" 
 });
 
 const App = () => {
@@ -12,6 +12,7 @@ const App = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [isQuizComplete, setIsQuizComplete] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('Maths');
 
   const hardcodedQuestions = [
     { question: "Please wait while the questions are being loaded", options: ["", "", "", ""], answer: 5 },
@@ -28,28 +29,64 @@ const App = () => {
 
   useEffect(() => {  
     setQuestions(hardcodedQuestions);
-    client.get().then((response) => {
+    client.get('exec?subjectName=Maths').then((response) => {
       setQuestions(response.data);
       //console.log(response.data);
     });
   }, []);
 
+  const options = document.querySelectorAll('.option-button');
+
   const handleAnswerClick = (index) => {
-    if (questions[currentQuestionIndex].answer === index) {
+    var correctAnswer= questions[currentQuestionIndex].answer;
+    correctAnswer = correctAnswer<4 ? correctAnswer : correctAnswer% 17;
+    if (correctAnswer === index) {
       setScore(score + 1);
     }
     if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      
+      options[correctAnswer].classList.add('correct');
+      setTimeout(() => {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        options[correctAnswer].classList.remove('correct');
+      }, 2000);
+      
     } else {
       setIsQuizComplete(true);
     }
+  };
+
+  const links = document.querySelectorAll('.tab');
+
+  const handleTabClick = (tab) => {
+    links.forEach((link) => {
+        console.log("Getting Data for " + tab);
+        if (link.id === tab) {
+            link.classList.add("active");
+            
+        }else {
+          link.classList.remove("active");
+        }        
+    });
+    client.get('exec?subjectName='+tab, { crossdomain: true }).then((response) => {
+      setQuestions(response.data);
+    });
+    setSelectedTab(tab);
   };
 
   return (
     <div className="app">
       {!isQuizComplete ? (
         questions.length > 0 && (
+          
           <div className="question-container">
+            <div className="nav-bar">
+            <ul>
+              <li><a className="tab active" id="Maths" onClick={() => handleTabClick('Maths')}>Maths</a></li>
+              <li><a className="tab" id="SST" onClick={() => handleTabClick('SST')}>SST</a></li>
+              
+            </ul>
+            </div>
             <h2>{questions[currentQuestionIndex].question}</h2>
             <div className="options">
               {questions[currentQuestionIndex].options.map((option, index) => (

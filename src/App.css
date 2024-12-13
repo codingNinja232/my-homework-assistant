@@ -11,14 +11,14 @@ body {
 .app {
   width: 100%;
   max-width: 800px;
-  padding: 20px;
+  padding: 5px 15px 5px 15px;
   box-sizing: border-box;
 }
 
 .question-container {
   text-align: center;
   color: #ffffff;
-  padding: 20px;
+  padding: 5px 15px 5px 15px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -58,7 +58,7 @@ body {
 
 @media (max-width: 1600px) {
   .app {
-    padding: 30px;
+    padding: 10px 20px 10px 20px;
   }
 
   .option-button {
@@ -73,4 +73,33 @@ body {
   .option-button {
     font-size: 24px;
   }
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+
+.active {
+  background-color: #04AA6D;
+}
+
+.correct {
+  background-color: #04AA6D;
 }
