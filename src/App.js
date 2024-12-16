@@ -6,6 +6,9 @@ import './App.css';
 const client = axios.create({
   baseURL: process.env.REACT_APP_API_BASEURI
 });
+const leaderboardClient = axios.create({
+  baseURL: process.env.REACT_APP_LEADERBOARD_API_BASEURI
+});
 
 const App = () => {
   const [questions, setQuestions] = useState([]);
@@ -20,6 +23,7 @@ const App = () => {
   const [highlightedAnswers, setHighlightedAnswers] = useState(null);
   const [timeLeft, setTimeLeft] = useState(120);
   const [timeElapsed, setTimeElapsed] = useState(0); // Percentage of time elapsed
+  const [leaderboardData, setLeaderboardData] = useState([]);
   
 
   
@@ -45,13 +49,22 @@ const App = () => {
   const handleStartClick = (tab) => {
     setActiveTab(tab);
     setIsStartScreen(false);
-    setIsLoading(true);
+    setIsLoading(true); //
     client.get(`exec?subjectName=${tab}`)
       .then((response) => {
         setQuestions(response.data);
         setError(null);
       })
       .catch(() => setError('Failed to load questions.'))
+      .finally(() => setIsLoading(false));
+
+      leaderboardClient.get(`exec?subjectName=${tab}`)
+      .then((response) => {
+        setLeaderboardData(response.data.leaderBoard);
+        setError(null);
+        console.log('leaderboardData : ' + leaderboardData);
+      })
+      .catch(() => setError('Failed to load leaderboard.'))
       .finally(() => setIsLoading(false));
   };
 
@@ -143,7 +156,25 @@ const App = () => {
       ) : (
         <div className="score-container">
           <h2>Quiz Complete!</h2>
-          <p>Your Score: {score} out of {questions.length} questions. If you with to publish the scores to the leaderboard, please wait for our update. </p>
+          <p>Your Score: {score} out of {questions.length} questions. 
+            If you with to publish the scores to the leaderboard, please wait for our update. 
+            Following people have scored maximum score in the tests.
+            </p>
+            <div className="table">
+              <div className="table-row header">
+                <div className="table-cell">Name</div>
+                <div className="table-cell">Score</div>
+              </div>
+              
+                {leaderboardData.map((item, index) => (
+                  <div className="table-row" key={index}>
+                  <div className="table-cell">{item[0]}</div>
+                  <div className="table-cell">{item[1]}</div>
+                </div>
+              
+                ))}
+              
+            </div>
         </div>
       )}
     </div>

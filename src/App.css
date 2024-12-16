@@ -71,9 +71,6 @@ body {
 .question {
   padding: 1rem;
   font-size: 2rem;
-  
-
-
 }
 
 .option-button {
@@ -99,6 +96,28 @@ body {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+}
+.table {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+.table-row {
+  display: contents; /* Makes each row behave like table rows */
+}
+
+.table-cell {
+  padding: 5px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.header {
+  font-weight: bold;
+  background-color: #f4f4f4;
 }
 
 .skip-button, .submit-button {
