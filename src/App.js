@@ -4,7 +4,7 @@ import axios from "axios";
 import './App.css';
 
 const client = axios.create({
-  baseURL: "https://myApi" 
+  baseURL: process.env.REACT_APP_API_BASEURI
 });
 
 const App = () => {
@@ -12,88 +12,92 @@ const App = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [isQuizComplete, setIsQuizComplete] = useState(false);
-  const [selectedTab, setSelectedTab] = useState('Maths');
+  const [activeTab, setActiveTab] = useState('Maths');
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const hardcodedQuestions = [
-    { question: "Please wait while the questions are being loaded", options: ["", "", "", ""], answer: 5 },
-    { question: "What is the capital of France?", options: ["Berlin", "London", "Paris", "Rome"], answer: 2 },
-    { question: "What color is the sky?", options: ["Blue", "Green", "Red", "Yellow"], answer: 0 }
-  ];
-
-  useEffect(() => {  
-    setQuestions(hardcodedQuestions);
-    client.get('exec?subjectName=Maths').then((response) => {
-      setQuestions(response.data);
-      //console.log(response.data);
-    });
+  useEffect(() => {
+    setIsLoading(true);
+    client.get(`exec?subjectName=Maths`)
+      .then((response) => setQuestions(response.data))
+      .catch(() => setError('Failed to load questions'))
+      .finally(() => setIsLoading(false));
   }, []);
 
-  const options = document.querySelectorAll('.option-button');
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    setIsLoading(true);
+    client.get(`exec?subjectName=${tab}`)
+      .then((response) => {
+        setQuestions(response.data);
+        setError(null);
+      })
+      .catch(() => setError('Failed to load questions.'))
+      .finally(() => setIsLoading(false));
+  };
 
-  const handleAnswerClick = (index) => {
-    var correctAnswer= questions[currentQuestionIndex].answer;
-    correctAnswer = correctAnswer<4 ? correctAnswer : correctAnswer% 17;
-    if (correctAnswer === index) {
-      setScore(score + 1);
+  const handleSubmit = () => {
+    if (selectedOption === questions[currentQuestionIndex]?.answer) {
+      setScore((prev) => prev + 1);
     }
+    setSelectedOption(null);
     if (currentQuestionIndex < questions.length - 1) {
-      
-      options[correctAnswer].classList.add('correct');
-      setTimeout(() => {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        options[correctAnswer].classList.remove('correct');
-      }, 2000);
-      
+      setCurrentQuestionIndex((prev) => prev + 1);
     } else {
       setIsQuizComplete(true);
     }
   };
 
-  const links = document.querySelectorAll('.tab');
-
-  const handleTabClick = (tab) => {
-    links.forEach((link) => {
-        console.log("Getting Data for " + tab);
-        if (link.id === tab) {
-            link.classList.add("active");
-            
-        }else {
-          link.classList.remove("active");
-        }        
-    });
-    client.get('exec?subjectName='+tab, { crossdomain: true }).then((response) => {
-      setQuestions(response.data);
-    });
-    setSelectedTab(tab);
+  const handleSkip = () => {
+    setSelectedOption(null);
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+    } else {
+      setIsQuizComplete(true);
+    }
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="app">
       {!isQuizComplete ? (
-        questions.length > 0 && (
-          
-          <div className="question-container">
-            <div className="nav-bar">
+        <div>
+          <div className="nav-bar">
             <ul>
-              <li><a className="tab active" id="Maths" onClick={() => handleTabClick('Maths')}>Maths</a></li>
-              <li><a className="tab" id="SST" onClick={() => handleTabClick('SST')}>SST</a></li>
-              <li><a className="tab" id="Science" onClick={() => handleTabClick('Science')}>Science</a></li>
+              {['Maths', 'SST', 'Science'].map((tab) => (
+                <li key={tab}>
+                  <a
+                    className={`tab ${activeTab === tab ? 'active' : ''}`}
+                    onClick={() => handleTabClick(tab)}
+                  >
+                    {tab}
+                  </a>
+                </li>
+              ))}
             </ul>
-            </div>
-            <h2>{questions[currentQuestionIndex].question}</h2>
+          </div>
+          <div className="question-container" style={{ userSelect: 'none' }}>
+            <h2>{questions[currentQuestionIndex]?.question}</h2>
             <div className="options">
-              {questions[currentQuestionIndex].options.map((option, index) => (
+              {questions[currentQuestionIndex]?.options.map((option, index) => (
                 <button
                   key={index}
-                  className="option-button"
-                  onClick={() => handleAnswerClick(index)}
+                  className={`option-button ${selectedOption === index ? 'selected' : ''}`}
+                  onClick={() => setSelectedOption(index)}
                 >
                   {option}
                 </button>
               ))}
             </div>
+            <div className="actions">
+              <button onClick={handleSkip} className="skip-button">Skip</button>
+              <button onClick={handleSubmit} className="submit-button">Submit</button>
+            </div>
           </div>
-        )
+        </div>
       ) : (
         <div className="score-container">
           <h2>Quiz Complete!</h2>
