@@ -139,7 +139,7 @@ body {
 .score-container {
   text-align: center;
   padding: 1rem;
-  font-size: 2rem;
+  font-size: 1.25rem;
   
 
 }
@@ -180,9 +180,7 @@ body {
   margin-bottom: 1rem;
 }
 
-.score-container p {
-  font-size: 1.25rem;
-}
+
 
 
 .option-button {
