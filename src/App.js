@@ -17,14 +17,30 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isStartScreen, setIsStartScreen] = useState(true);
+  const [highlightedAnswers, setHighlightedAnswers] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(120);
+  const [timeElapsed, setTimeElapsed] = useState(0); // Percentage of time elapsed
+  
+
+  
 
   useEffect(() => {
-    //setIsLoading(true);
-    /*client.get(`exec?subjectName=Maths`)
-      .then((response) => setQuestions(response.data))
-      .catch(() => setError('Failed to load questions'))
-      .finally(() => setIsLoading(false));*/
-  }, []);
+    if (timeElapsed < 100 && !isQuizComplete) {
+      const timer = setTimeout(() => {
+        setTimeElapsed((prev) => prev + (100 / 120)); // Increment percentage for 1 second
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (timeElapsed >= 100) {
+      setIsQuizComplete(true);
+    }
+  }, [timeElapsed, isQuizComplete]);
+
+  const restartQuiz = () => {
+    setTimeLeft(120);
+    setScore(0);
+    setCurrentQuestionIndex(0);
+    setIsQuizComplete(false);
+  };
 
   const handleStartClick = (tab) => {
     setActiveTab(tab);
@@ -44,15 +60,24 @@ const App = () => {
     
     if (selectedOption === correctAnswer) {
       setScore((prev) => prev + 1);
-    }
-    setSelectedOption(null);
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
+      setHighlightedAnswers({ correct: correctAnswer });
     } else {
-      setIsQuizComplete(true);
+      setHighlightedAnswers({ correct: correctAnswer, wrong: selectedOption });
+      setScore((prev) => prev - 0.25);
     }
-    console.log('currentQuestionIndex : ' + currentQuestionIndex);
-    console.log('score : ' + score);
+    setTimeout(() => {
+      setHighlightedAnswers(null);
+      setSelectedOption(null);
+      if (currentQuestionIndex < questions.length - 1) {
+        setCurrentQuestionIndex((prev) => prev + 1);
+      } else {
+        setIsQuizComplete(true);
+      }
+      console.log('score : ' + score);
+    }, 1000);
+
+    //console.log('currentQuestionIndex : ' + currentQuestionIndex);
+    
   };
 
   const handleSkip = () => {
@@ -62,7 +87,9 @@ const App = () => {
     } else {
       setIsQuizComplete(true);
     }
-    //console.log('currentQuestionIndex' + currentQuestionIndex);
+    questions[questions.length]=questions[currentQuestionIndex];
+
+    console.log('questions.length' + questions.length);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -72,7 +99,8 @@ const App = () => {
     return (
       <div className="start-screen">
         <h1>Welcome to the Quiz!</h1>
-        <p>Test your knowledge across various subjects. Select a category to start:</p>
+        <p>Test your knowledge across various subjects. You would be presented with a question with 4 possible answers. If you select the correct answer you get 1 point and if you select a wrong answer 0.25 points would be deducted from your score. 
+          If you do not understand the question, you can skip it. Your score would not change if you skip the question. Select a category to start:</p>
         <div className="nav-bar">
           <button className="start-button" onClick={() => handleStartClick('Maths')}>Maths</button>
           <button className="start-button" onClick={() => handleStartClick('SST')}>SST</button>
@@ -88,11 +116,15 @@ const App = () => {
         <div>
           <div className="question-container" style={{ userSelect: 'none' }}>
             <div className="question">{questions[currentQuestionIndex]?.question}</div>
-            <div className="options">
+            <div className="options" >
               {questions[currentQuestionIndex]?.options.map((option, index) => (
                 <button
                   key={index}
-                  className={`option-button ${selectedOption === index ? 'selected' : ''}`}
+                  className={`option-button ${
+                    highlightedAnswers?.correct === index ? 'correct' : 
+                    highlightedAnswers?.wrong === index ? 'wrong' : 
+                    selectedOption === index ? 'selected' : ''
+                  }`}
                   onClick={() => setSelectedOption(index)}
                 >
                   {option}
@@ -102,6 +134,9 @@ const App = () => {
             <div className="actions">
               <button onClick={handleSkip} className="skip-button">Skip</button>
               <button onClick={handleSubmit} className="submit-button">Submit</button>
+            </div>
+            <div className="progress-bar-container">
+              <div className="progress-bar" style={{ width: `${timeElapsed}%` }}></div>
             </div>
           </div>
         </div>
