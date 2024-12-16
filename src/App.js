@@ -27,7 +27,7 @@ const App = () => {
   useEffect(() => {
     if (timeElapsed < 100 && !isQuizComplete) {
       const timer = setTimeout(() => {
-        setTimeElapsed((prev) => prev + (100 / 120)); // Increment percentage for 1 second
+        setTimeElapsed((prev) => prev + (100 / 20)); // Increment percentage for 1 second
       }, 1000);
       return () => clearTimeout(timer);
     } else if (timeElapsed >= 100) {
@@ -36,7 +36,7 @@ const App = () => {
   }, [timeElapsed, isQuizComplete]);
 
   const restartQuiz = () => {
-    setTimeLeft(120);
+    setTimeLeft(20);
     setScore(0);
     setCurrentQuestionIndex(0);
     setIsQuizComplete(false);
@@ -143,7 +143,7 @@ const App = () => {
       ) : (
         <div className="score-container">
           <h2>Quiz Complete!</h2>
-          <p>Your Score: {score}/{questions.length}</p>
+          <p>Your Score: {score} out of {questions.length} questions. If you with to publish the scores to the leaderboard, please wait for our update. </p>
         </div>
       )}
     </div>
