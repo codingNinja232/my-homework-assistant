@@ -40,7 +40,9 @@ const App = () => {
   };
 
   const handleSubmit = () => {
-    if (selectedOption === questions[currentQuestionIndex]?.answer) {
+    var correctAnswer = questions[currentQuestionIndex]?.answer % 17;
+    
+    if (selectedOption === correctAnswer) {
       setScore((prev) => prev + 1);
     }
     setSelectedOption(null);
@@ -49,8 +51,8 @@ const App = () => {
     } else {
       setIsQuizComplete(true);
     }
-    console.log('currentQuestionIndex' + currentQuestionIndex);
-    console.log('score' + score);
+    console.log('currentQuestionIndex : ' + currentQuestionIndex);
+    console.log('score : ' + score);
   };
 
   const handleSkip = () => {
@@ -60,7 +62,7 @@ const App = () => {
     } else {
       setIsQuizComplete(true);
     }
-    console.log('currentQuestionIndex' + currentQuestionIndex);
+    //console.log('currentQuestionIndex' + currentQuestionIndex);
   };
 
   if (isLoading) return <div>Loading...</div>;
