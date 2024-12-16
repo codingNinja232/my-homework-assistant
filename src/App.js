@@ -12,21 +12,23 @@ const App = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [isQuizComplete, setIsQuizComplete] = useState(false);
-  const [activeTab, setActiveTab] = useState('Maths');
+  const [activeTab, setActiveTab] = useState('');
   const [selectedOption, setSelectedOption] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isStartScreen, setIsStartScreen] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true);
-    client.get(`exec?subjectName=Maths`)
+    //setIsLoading(true);
+    /*client.get(`exec?subjectName=Maths`)
       .then((response) => setQuestions(response.data))
       .catch(() => setError('Failed to load questions'))
-      .finally(() => setIsLoading(false));
+      .finally(() => setIsLoading(false));*/
   }, []);
 
-  const handleTabClick = (tab) => {
+  const handleStartClick = (tab) => {
     setActiveTab(tab);
+    setIsStartScreen(false);
     setIsLoading(true);
     client.get(`exec?subjectName=${tab}`)
       .then((response) => {
@@ -47,6 +49,8 @@ const App = () => {
     } else {
       setIsQuizComplete(true);
     }
+    console.log('currentQuestionIndex' + currentQuestionIndex);
+    console.log('score' + score);
   };
 
   const handleSkip = () => {
@@ -56,31 +60,32 @@ const App = () => {
     } else {
       setIsQuizComplete(true);
     }
+    console.log('currentQuestionIndex' + currentQuestionIndex);
   };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  if (isStartScreen) {
+    return (
+      <div className="start-screen">
+        <h1>Welcome to the Quiz!</h1>
+        <p>Test your knowledge across various subjects. Select a category to start:</p>
+        <div className="nav-bar">
+          <button className="start-button" onClick={() => handleStartClick('Maths')}>Maths</button>
+          <button className="start-button" onClick={() => handleStartClick('SST')}>SST</button>
+          <button className="start-button" onClick={() => handleStartClick('Science')}>Science</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="app">
       {!isQuizComplete ? (
         <div>
-          <div className="nav-bar">
-            <ul>
-              {['Maths', 'SST', 'Science'].map((tab) => (
-                <li key={tab}>
-                  <a
-                    className={`tab ${activeTab === tab ? 'active' : ''}`}
-                    onClick={() => handleTabClick(tab)}
-                  >
-                    {tab}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
           <div className="question-container" style={{ userSelect: 'none' }}>
-            <h2>{questions[currentQuestionIndex]?.question}</h2>
+            <div className="question">{questions[currentQuestionIndex]?.question}</div>
             <div className="options">
               {questions[currentQuestionIndex]?.options.map((option, index) => (
                 <button
