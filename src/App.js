@@ -98,8 +98,11 @@ const App = () => {
     console.log('questions.length' + questions.length);
   };
 
+  var hasPublished = false;
   const handlePublish = (e) => {
     e.preventDefault(); // Prevent the page from refreshing
+    hasPublished=true;
+    document.getElementById('publishResults').remove();
     try {
       leaderboardClient.get(`exec?subjectName=${activeTab}&name=${name}&score=${score}`)
       .then((response) => {
@@ -172,23 +175,23 @@ const App = () => {
           </p>
           
           <div style={{ padding: '20px' }}>
-          { rank === 0 &&
-          <div>
-          <form onSubmit={handlePublish}>
-            <div>
-              <label htmlFor="name">Name: </label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-              <button type="submit" style={{ marginLeft: '10px' }}>Publish</button>
+          { !hasPublished &&
+            <div id='publishResults'>
+              <form onSubmit={handlePublish}>
+                <div>
+                  <label htmlFor="name">Name: </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                  <button type="submit" style={{ marginLeft: '10px' }}>Publish</button>
+                </div>
+                
+              </form>
             </div>
-            
-          </form>
-          </div>
           }
           {rank > 0 && <p> Your Rank is {rank}</p>}
         </div>
@@ -207,6 +210,7 @@ const App = () => {
               ))}
             
           </div>}
+          <p>Date Time : {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
         </div>
       )}
     </div>
