@@ -99,7 +99,7 @@ const App = () => {
     hasPublished=true;
     document.getElementById('publishResults').disabled = true;
     var md5Hash=MD5(name+score).toString();
-    console.log('name: ' +name + ' score '+ score+ ' md5Hash '+md5Hash);
+    //console.log('name: ' +name + ' score '+ score+ ' md5Hash '+md5Hash);
     
     leaderboardClient.get(`exec?subjectName=${activeTab}&name=${name}&score=${score}&session=${sessionId}`)
       .then((response) => {
