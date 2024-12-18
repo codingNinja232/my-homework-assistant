@@ -79,10 +79,10 @@ const App = () => {
       } else {
         setIsQuizComplete(true);
       }
-      console.log('score : ' + score);
+      //console.log('score : ' + score);
     }, 1000);
 
-    //console.log('currentQuestionIndex : ' + currentQuestionIndex);
+    //console.log('timeElapsed : ' + timeElapsed);
     
   };
 
@@ -95,21 +95,23 @@ const App = () => {
     }
     questions[questions.length]=questions[currentQuestionIndex];
 
-    console.log('questions.length' + questions.length);
+    //console.log('questions.length' + questions.length);
   };
 
   var hasPublished = false;
   const handlePublish = (e) => {
     e.preventDefault(); // Prevent the page from refreshing
     hasPublished=true;
-    document.getElementById('publishResults').remove();
+    document.getElementById('publishResults').disabled = true;
+    //
     try {
       leaderboardClient.get(`exec?subjectName=${activeTab}&name=${name}&score=${score}`)
       .then((response) => {
         setLeaderboardData(response.data.leaderBoard);
         setRank(response.data.rank);
         setError(null);
-        console.log('leaderboardData : ' + leaderboardData);
+        //console.log('leaderboardData : ' + response.data);
+        
       })
       .catch(() => setError('Failed to load leaderboard.'))
       .finally(() => setIsLoading(false));
@@ -125,9 +127,14 @@ const App = () => {
   if (isStartScreen) {
     return (
       <div className="start-screen">
-        <h1>Welcome to the Homework Assistant!</h1>
+        <h1>Welcome to the The Glory Board!</h1>
+        
         <p>Test your knowledge across various subjects. You will get 2 min to answer as many questions as you like. You would be presented with a question with 4 possible answers. If you select the correct answer you get 1 point and if you select a wrong answer 0.25 points would be deducted from your score. 
-          If you do not understand the question, you can skip it. Your score would not change if you skip the question. Select a category to start:</p>
+          If you do not understand the question, you can skip it. Your score would not change if you skip the question. Select a category to start:
+        </p>
+        <br/>
+       
+
         <div className="nav-bar">
           <button className="start-button" onClick={() => handleStartClick('Maths')}>Maths</button>
           <button className="start-button" onClick={() => handleStartClick('SST')}>SST</button>
@@ -169,14 +176,14 @@ const App = () => {
         </div>
       ) : (
         <div className="score-container">
-          <h2>Quiz Complete!</h2>
+          <h2>{activeTab} Quiz Complete!</h2>
           <p>Your Score: {score} out of {questions.length} questions. 
-            If you with to publish the scores to the leaderboard, please enter your name and click publish.
+            If you with to publish the scores to The Gloryboard, please enter your name and click publish.
           </p>
           
           <div style={{ padding: '20px' }}>
           { !hasPublished &&
-            <div id='publishResults'>
+            <div>
               <form onSubmit={handlePublish}>
                 <div>
                   <label htmlFor="name">Name: </label>
@@ -187,7 +194,7 @@ const App = () => {
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
-                  <button type="submit" style={{ marginLeft: '10px' }}>Publish</button>
+                  <button id='publishResults' type="submit" style={{ marginLeft: '10px' }}>Publish</button>
                 </div>
                 
               </form>
