@@ -3,7 +3,7 @@ body {
   font-family: Arial, sans-serif;
   margin: auto;
   box-sizing: border-box;
-  height: 100vh;
+  height: 95vh;
   display: flex;
 
 }
@@ -12,7 +12,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 92vh;
+  height: 90vh;
   width: 100%;
   text-align: center;
   border: 1px solid #ccc;
@@ -32,12 +32,12 @@ body {
 }
 
 .start-screen h1 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
 .start-screen p {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .nav-bar {
@@ -70,7 +70,7 @@ body {
 }
 .question {
   padding: 1rem;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .option-button {
@@ -176,7 +176,7 @@ body {
 }
 
 .score-container h2 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
