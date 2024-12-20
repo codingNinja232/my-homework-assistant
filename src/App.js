@@ -42,25 +42,26 @@ const App = () => {
   }, [timeElapsed, isQuizComplete]);
 
   const handleStartClick = (tab) => {
-    console.log(tab);
+    
     setActiveTab(tab);
     setIsStartScreen(false);
     setIsLoading(true);
-    console.log('before call' +tab);
+    setTimeElapsed(0);
+    
     client
       .get(`exec?subjectName=${tab}`)
       .then((response) => {
-        console.log('in call' +tab);
+        
         setQuestions(response.data);
         setError(null);
       })
       .catch(() => setError('Failed to load questions.'))
       .finally(() => setIsLoading(false));
-    console.log('in call' +tab);
+    
     leaderboardClient
       .get(`exec?subjectName=${tab}&method=createSession`)
       .then((response) => {
-        console.log('in leaderboardClient call' +tab);
+        
         setSessionId(response.data.newSessionId);
         setError(null);
       })
