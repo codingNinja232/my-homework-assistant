@@ -17,7 +17,6 @@ const App = () => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [rank, setRank] = useState(0);
   const [isQuizComplete, setIsQuizComplete] = useState(false);
   const [activeTab, setActiveTab] = useState('');
   const [selectedOption, setSelectedOption] = useState(null);
@@ -29,6 +28,9 @@ const App = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [name, setName] = useState('');
   const [sessionId, setSessionId] = useState('');
+  const [timeLimit, setTimeLimit] = useState(120);
+  
+
 
   useEffect(() => {
     if (timeElapsed < 100 && !isQuizComplete) {
@@ -47,6 +49,9 @@ const App = () => {
     setIsStartScreen(false);
     setIsLoading(true);
     setTimeElapsed(0);
+    if(tab === 'Maths'){
+      setTimeLimit(240);
+    }
     
     client
       .get(`exec?subjectName=${tab}`)
@@ -64,7 +69,6 @@ const App = () => {
         
         setSessionId(response.data.newSessionId);
         setLeaderboardData(response.data.leaderBoard);
-        setRank(0);
         setError(null);
       })
       .catch(() => setError('Failed to create session.'))
@@ -95,6 +99,7 @@ const App = () => {
 
   const handleSkip = () => {
     setSelectedOption(null);
+    //console.log(timeLimit);
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
@@ -110,9 +115,8 @@ const App = () => {
     leaderboardClient
       .get(`exec?subjectName=${activeTab}&name=${name}&score=${score}&session=${sessionId}&md5Hash=${md5Hash}`)
       .then((response) => {
-        //setLeaderboardData(response.data.leaderBoard);
-        //setRank(response.data.rank);
         setError(null);
+        document.getElementById("resultTitle").innerHTML='';
       })
       .catch(() => setError('Failed to load leaderboard.'))
       .finally(() => setIsLoading(false));
@@ -145,7 +149,6 @@ const App = () => {
           setName={setName}
           onPublish={handlePublish}
           leaderboardData={leaderboardData}
-          rank={rank}
         />
       )}
     </div>

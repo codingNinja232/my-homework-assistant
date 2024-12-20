@@ -15,6 +15,9 @@ const LandingPage = ({ onStart }) => {
         <button className="start-button" onClick={() => onStart('Maths')}>Maths</button>
         <button className="start-button" onClick={() => onStart('SST')}>SST</button>
         <button className="start-button" onClick={() => onStart('Science')}>Science</button>
+        <button className="start-button" onClick={() => onStart('English')}>English</button>
+        <button className="start-button" onClick={() => onStart('Marathi')}>मराठी</button>
+        <button className="start-button" onClick={() => onStart('Hindi')}>हिंदी</button>
       </div>
     </div>
   );

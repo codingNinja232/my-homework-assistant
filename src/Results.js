@@ -7,8 +7,7 @@ const Results = ({
   name, 
   setName, 
   onPublish, 
-  leaderboardData, 
-  rank 
+  leaderboardData
 }) => {
   return (
     <div className="score-container">
@@ -32,8 +31,6 @@ const Results = ({
             <br/>
         </div>
         
-      {rank > 0 && <p>Your Rank: {rank}</p>}
-      
       {leaderboardData.length > 0 && (
         <div className="table">
           <div className="table-row header">
