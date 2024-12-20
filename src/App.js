@@ -63,6 +63,8 @@ const App = () => {
       .then((response) => {
         
         setSessionId(response.data.newSessionId);
+        setLeaderboardData(response.data.leaderBoard);
+        setRank(0);
         setError(null);
       })
       .catch(() => setError('Failed to create session.'))
@@ -108,8 +110,8 @@ const App = () => {
     leaderboardClient
       .get(`exec?subjectName=${activeTab}&name=${name}&score=${score}&session=${sessionId}&md5Hash=${md5Hash}`)
       .then((response) => {
-        setLeaderboardData(response.data.leaderBoard);
-        setRank(response.data.rank);
+        //setLeaderboardData(response.data.leaderBoard);
+        //setRank(response.data.rank);
         setError(null);
       })
       .catch(() => setError('Failed to load leaderboard.'))

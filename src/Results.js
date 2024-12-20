@@ -13,9 +13,10 @@ const Results = ({
   return (
     <div className="score-container">
         <h2>{activeTab} Quiz Complete!</h2>
-        {!(leaderboardData.length > 0) && <div id='resultTitle'>
+        <p>Your Score is : {score}</p>
+        <div id='resultTitle'>
         
-            <p>Your Score is : {score}</p>
+            
             <p>If you wish to publish the scores to The Glory Board, please enter your name and click publish.</p>
             <form onSubmit={onPublish}>
                 <label htmlFor="name">Name: </label>
@@ -28,9 +29,11 @@ const Results = ({
                 />
                 <button id="publishResults" type="submit">Publish</button>
             </form>
+            <br/>
         </div>
-        }
+        
       {rank > 0 && <p>Your Rank: {rank}</p>}
+      
       {leaderboardData.length > 0 && (
         <div className="table">
           <div className="table-row header">
