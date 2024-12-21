@@ -35,8 +35,8 @@ const App = () => {
   useEffect(() => {
     if (timeElapsed < 100 && !isQuizComplete) {
       const timer = setTimeout(() => {
-        setTimeElapsed((prev) => prev + (100 / 120)); // Increment percentage for 1 second
-      }, 1000);
+        setTimeElapsed((prev) => prev + (100 / timeLimit)); // Increment percentage for 1 second
+      }, 500);
       return () => clearTimeout(timer);
     } else if (timeElapsed >= 100) {
       setIsQuizComplete(true);
@@ -49,6 +49,8 @@ const App = () => {
     setIsStartScreen(false);
     setIsLoading(true);
     setTimeElapsed(0);
+    setName(localStorage.getItem('user-name'));
+    //console.log(name);
     if(tab === 'Maths'){
       setTimeLimit(240);
     }
@@ -110,6 +112,8 @@ const App = () => {
 
   const handlePublish = (e) => {
     e.preventDefault();
+    localStorage.setItem('user-name', name);
+    //console.log(name);
     const md5Hash = MD5(name + score).toString();
 
     leaderboardClient
@@ -133,7 +137,6 @@ const App = () => {
         <Questions
           questions={questions}
           currentQuestionIndex={currentQuestionIndex}
-          setCurrentQuestionIndex={setCurrentQuestionIndex}
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
           highlightedAnswers={highlightedAnswers}

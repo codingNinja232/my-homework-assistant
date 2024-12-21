@@ -3,7 +3,6 @@ import React from 'react';
 const Questions = ({
   questions,
   currentQuestionIndex,
-  setCurrentQuestionIndex,
   selectedOption,
   setSelectedOption,
   highlightedAnswers,

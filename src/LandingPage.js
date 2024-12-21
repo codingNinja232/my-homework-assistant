@@ -5,7 +5,7 @@ const LandingPage = ({ onStart }) => {
     <div className="start-screen">
       <h1>Welcome to The Glory Board!</h1>
       <p>
-        Test your knowledge across various subjects. You will get 2 minutes to complete the quiz. Each question has 4 possible answers.
+        Test your knowledge across various subjects. You will get 2-4 minutes to complete the quiz. Each question has 4 possible answers.
         You get 1 point for a correct answer and -0.25 points for a wrong answer.
         You can skip the question without changing your score.
       </p>
