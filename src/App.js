@@ -36,7 +36,7 @@ const App = () => {
     if (timeElapsed < 100 && !isQuizComplete) {
       const timer = setTimeout(() => {
         setTimeElapsed((prev) => prev + (100 / timeLimit)); // Increment percentage for 1 second
-      }, 500);
+      }, 1000);
       return () => clearTimeout(timer);
     } else if (timeElapsed >= 100) {
       setIsQuizComplete(true);
@@ -96,7 +96,7 @@ const App = () => {
       } else {
         setIsQuizComplete(true);
       }
-    }, 1000);
+    }, 500);
   };
 
   const handleSkip = () => {
