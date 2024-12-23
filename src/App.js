@@ -79,18 +79,21 @@ const App = () => {
 
   const handleSubmit = () => {
     const correctAnswer = questions[currentQuestionIndex]?.answer % 17;
+    var mySelection = selectedOption;
+    setSelectedOption(null);
+    console.log(score);
 
-    if (selectedOption === correctAnswer) {
+    if (mySelection === correctAnswer) {
       setScore((prev) => prev + 1);
       setHighlightedAnswers({ correct: correctAnswer });
     } else {
-      setHighlightedAnswers({ correct: correctAnswer, wrong: selectedOption });
+      setHighlightedAnswers({ correct: correctAnswer, wrong: mySelection });
       setScore((prev) => prev - 0.25);
     }
 
     setTimeout(() => {
       setHighlightedAnswers(null);
-      setSelectedOption(null);
+      
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex((prev) => prev + 1);
       } else {
