@@ -17,6 +17,7 @@ const App = () => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const [minScore, setMinScore] = useState(10);
   const [isQuizComplete, setIsQuizComplete] = useState(false);
   const [activeTab, setActiveTab] = useState('');
   const [selectedOption, setSelectedOption] = useState(null);
@@ -42,6 +43,19 @@ const App = () => {
       setIsQuizComplete(true);
     }
   }, [timeElapsed, isQuizComplete]);
+
+  useEffect(() => {
+    var messageDiv = document.getElementById("myMessage");
+    if (messageDiv) {
+      if(score > minScore){
+        messageDiv.innerHTML='<p>Congrats You have made it to the leaderboard. Please remember to publish the score on last screen</p>';
+      } else {
+        messageDiv.innerHTML='';
+      }
+      
+    } 
+    //console.log('message Div ' + messageDiv);
+  }, [score]);
 
   const handleStartClick = (tab) => {
     
@@ -71,6 +85,7 @@ const App = () => {
         
         setSessionId(response.data.newSessionId);
         setLeaderboardData(response.data.leaderBoard);
+        setMinScore(response.data.leaderBoard[9][1]);
         setError(null);
       })
       .catch(() => setError('Failed to create session.'))
@@ -81,7 +96,7 @@ const App = () => {
     const correctAnswer = questions[currentQuestionIndex]?.answer % 17;
     var mySelection = selectedOption;
     setSelectedOption(null);
-    console.log(score);
+    //console.log(score);
 
     if (mySelection === correctAnswer) {
       setScore((prev) => prev + 1);

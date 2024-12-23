@@ -48,6 +48,10 @@ const Questions = ({
         <div className="progress-bar-container">
           <div className="progress-bar" style={{ width: `${timeElapsed}%` }}></div>
         </div>
+        
+        <div id="myMessage">
+          
+        </div>
       </div>
     </div>
   );
